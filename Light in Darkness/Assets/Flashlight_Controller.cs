@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Flashlight_Controller : MonoBehaviour
 {
+    Vector3 mouseScreenPosition;
     // Start is called before the first frame update
     void Start()
     {
@@ -11,12 +12,10 @@ public class Flashlight_Controller : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
-        Vector2 mouseScreenPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-        Vector2 direction = (mouseScreenPosition - (Vector2)transform.position).normalized;
-
+        mouseScreenPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 direction = ((Vector2)mouseScreenPosition - (Vector2)transform.position).normalized;
         transform.up = direction;
     }
 }

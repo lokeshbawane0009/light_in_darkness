@@ -106,12 +106,12 @@ TextureImporter:
       name: Shawn Obrien Walk_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 512
-        height: 512
+        x: 128
+        y: 12
+        width: 248
+        height: 480
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -127,12 +127,12 @@ TextureImporter:
       name: Shawn Obrien Walk_1
       rect:
         serializedVersion: 2
-        x: 512
+        x: 640
         y: 0
-        width: 512
-        height: 512
+        width: 248
+        height: 480
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -148,12 +148,12 @@ TextureImporter:
       name: Shawn Obrien Walk_2
       rect:
         serializedVersion: 2
-        x: 1024
+        x: 1160
         y: 0
-        width: 512
-        height: 512
+        width: 248
+        height: 480
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -169,12 +169,12 @@ TextureImporter:
       name: Shawn Obrien Walk_3
       rect:
         serializedVersion: 2
-        x: 1536
+        x: 1680
         y: 0
-        width: 512
-        height: 512
+        width: 248
+        height: 480
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []

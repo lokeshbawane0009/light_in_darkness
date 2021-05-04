@@ -53,10 +53,11 @@ public class Enemy_Spider : MonoBehaviour
 
     public float _timer;
     private float timer;
-
+    public AudioClip die_clip;
+    bool death = false;
     public void Damage(float intensity, GameObject tx,Vector3 point)
     {
-        if (health >= 0)
+        if (health >= 0 && death==false)
         {
             if (intensity > 2f)
             {
@@ -64,10 +65,13 @@ public class Enemy_Spider : MonoBehaviour
                 health -= intensity*Time.deltaTime*2f;
             }
         }
-        else
+        else if(death==false)
         {
+            death = true;
+            GetComponent<AudioSource>().volume = 1;
+            GetComponent<AudioSource>().PlayOneShot(die_clip);
             Instantiate(deathparticles, transform.position,deathparticles.transform.rotation,transform.parent);
-            Destroy(this.gameObject);
+            Destroy(this.gameObject,1f);
         }
     }
 }

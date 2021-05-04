@@ -24,6 +24,10 @@ public class Flashlight_Controller : MonoBehaviour
 
     float df_inner_angle, df_outer_angle, df_falloff_intensity, df_intensity;
 
+    private void OnDisable()
+    {
+        flashlight_bar.size += 0.3f * Time.deltaTime;
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {

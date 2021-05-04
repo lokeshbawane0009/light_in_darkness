@@ -53,6 +53,7 @@ public class Player_Controller : MonoBehaviour
         
 
         isGrounded = Physics2D.OverlapCircle(foot_location.position, 0.1f);
+        anim.SetBool("isGrounded", isGrounded);
         input_x = Input.GetAxis("Horizontal");
 
         if (Input.GetKeyDown(KeyCode.T))
@@ -119,7 +120,6 @@ public class Player_Controller : MonoBehaviour
             player_direction.y = 1;
             player_rigidbody.AddForce(transform.up * jumpforce, ForceMode2D.Impulse);
             
-            anim.SetBool("Jump", true);
         }
         anim.SetFloat("Y_Velocity", player_rigidbody.velocity.y);
         if (player_rigidbody.velocity.y < -3 || player_rigidbody.velocity.y > 3)
@@ -127,7 +127,6 @@ public class Player_Controller : MonoBehaviour
 
         if (player_rigidbody.velocity.y == 0 && canTriggerDust  && isGrounded)
         {
-            anim.SetBool("Jump", false);
             Instantiate(footstepdust_cloud, foot_location.position, Quaternion.identity);
             canTriggerDust = false;
         }
@@ -137,7 +136,7 @@ public class Player_Controller : MonoBehaviour
     public Scrollbar healtbar;
     Material Original_Material;
 
-    public IEnumerator DamagePlayer()
+    public IEnumerator DamagePlayer(GameObject bullet)
     {
         SpriteRenderer sp= GetComponent<SpriteRenderer>();
         heath -= 10f;
@@ -153,6 +152,7 @@ public class Player_Controller : MonoBehaviour
         sp.material = damage_Material;
         yield return new WaitForSeconds(.05f);
         sp.material = Original_Material;
+        Destroy(bullet);
     }
 
     

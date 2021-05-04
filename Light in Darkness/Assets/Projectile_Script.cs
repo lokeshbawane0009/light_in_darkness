@@ -13,14 +13,16 @@ public class Projectile_Script : MonoBehaviour
         
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
-        anim.SetBool("Exit", true);
-        Destroy(gameObject, 1f);
         if (collision.transform.tag == "Player")
         {
             Debug.Log("Damage Player");
-            StartCoroutine(collision.transform.GetComponent<Player_Controller>().DamagePlayer());
+            StartCoroutine(collision.transform.GetComponent<Player_Controller>().DamagePlayer(this.gameObject));
         }
+        GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
+        anim.SetBool("Exit", true);
+        GetComponent<Collider2D>().enabled = false;
+        Destroy(gameObject, 1f);
+        
     }
 
     // Update is called once per frame

@@ -26,6 +26,7 @@ public class PlayerController : MonoBehaviour
     bool Attack = false;
     bool Shield = false;
     bool Dodge = false;
+    public bool ledgeGrabbed = false;
     public bool isWall;
 
     public Animator anim;
@@ -56,7 +57,7 @@ public class PlayerController : MonoBehaviour
 
     private void JumpManager()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !Attack && !Shield && !Dodge)
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !Attack && !Shield && !Dodge &&!ledgeGrabbed)
         {
             //Set Animation State
             anim.SetBool("Jump", true);
@@ -101,7 +102,7 @@ public class PlayerController : MonoBehaviour
         {
             rb.velocity = new Vector2(transform.localScale.x * 0.5f, 0);
         }
-        else if (Dodge || noheadroom)
+        else if ((Dodge || noheadroom)&&!ledgeGrabbed)
         {
             rb.velocity = new Vector2(transform.localScale.x * 7f, rb.velocity.y);
         }
@@ -168,7 +169,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //Trigger attack
-        if (Input.GetKeyDown(KeyCode.J) &&!Dodge)
+        if (Input.GetKeyDown(KeyCode.J) &&!Dodge &&!ledgeGrabbed)
         {
             //Check If already used airattack
             if (air_attack == true)
@@ -199,12 +200,10 @@ public class PlayerController : MonoBehaviour
         {
             air_attack = true;
             rb.velocity = new Vector2(transform.localScale.x * 5f, 0);
-            Debug.Log("Air Attack");
         }
         else if (isGrounded)
         {
             rb.velocity = new Vector2(transform.localScale.x * 5f, 0);
-            Debug.Log("Ground Attack");
         }
     }
     #endregion
@@ -246,7 +245,11 @@ public class PlayerController : MonoBehaviour
     {
         Dodge = true;
         anim.SetTrigger("Roll");
+        GetComponent<Collider2D>().enabled = false;
         yield return new WaitForSeconds(0.9f);
+        yield return new WaitWhile(() => HeadClearanceCheck());
+        GetComponent<Collider2D>().enabled = true;
+        yield return new WaitForSeconds(0.1f);
         yield return new WaitWhile(() => HeadClearanceCheck());
         anim.ResetTrigger("Roll");
         Dodge = false;
@@ -258,13 +261,13 @@ public class PlayerController : MonoBehaviour
         if (Physics2D.Raycast(headClearance.transform.position, Vector2.up, length, LayerMask.GetMask("Platforms"))&& Dodge)
         {
             noheadroom = true;
-            anim.SetBool("Con_Roll", noheadroom);
+            anim.SetBool("Con_Roll", true);
             rb.velocity = new Vector2(transform.localScale.x * 7f, rb.velocity.y);
         }
         else
         {
             noheadroom = false;
-            anim.SetBool("Con_Roll", noheadroom);
+            anim.SetBool("Con_Roll", false);
         }
 
         Debug.DrawRay(headClearance.transform.position, Vector2.up*length, Color.red);
@@ -277,11 +280,11 @@ public class PlayerController : MonoBehaviour
     public GameObject ledgeGrabFinder;
     RaycastHit2D hit;
     public bool pointfound = false;
-    public bool ledgeGrabbed = false;
     Vector3 dir;
 
     IEnumerator ClimbUp()
     {
+        ledgeDecision = true;
         anim.SetTrigger("LedgeClimbUp");
         anim.ResetTrigger("LedgeGrab");
         yield return new WaitForSeconds(1f);
@@ -289,23 +292,29 @@ public class PlayerController : MonoBehaviour
         anim.ResetTrigger("LedgeClimbUp");
     }
 
+    public bool ledgeDecision = false;
+
     void LedgeGrabManager()
     {
         dir = transform.localScale;
         dir.y = dir.z = 0;
 
+        
+
         if (ledgeGrabbed)
         {
             Debug.DrawRay(hit.point, hit.normal * 5f, Color.yellow);
-            if (input_y < 0)
+            if (input_y < 0 && !ledgeDecision)
             {
+                ledgeDecision = true;
                 transform.position = transform.Find("PlayerCharacter").position;
                 ledgeGrabbed = false;
                 rb.gravityScale = 1.5f;
                 anim.SetTrigger("LedgeClimbDown");
                 anim.ResetTrigger("LedgeGrab");
+                
             }
-            if (input_y > 0)
+            if (input_y > 0 && !ledgeDecision)
             {
                 StartCoroutine(ClimbUp());
             }
@@ -313,16 +322,21 @@ public class PlayerController : MonoBehaviour
         else if (!ledgeGrabbed && isGrounded)
         {
             pointfound = false;
+            ledgeDecision = false;
         }
-        else if (isGrounded)
+        else if(isGrounded)
         {
             pointfound = false;
+            //anim.ResetTrigger("LedgeClimbDown");
+            //anim.ResetTrigger("LedgeClimbUp");
+            //anim.ResetTrigger("LedgeGrab");
         }
+
 
         if (!pointfound)
         {
             WallFinder();
-            if (rb.velocity.y < 0f && !isGrounded)
+            if (rb.velocity.y < 0f && !isGrounded &&input_y>=0)
             {
                 if (Physics2D.Raycast(ledgeGrabFinder.transform.position, dir, ledgelength, LayerMask.GetMask("Platforms")) && !pointfound && !isWall && !ledgeGrabbed)
                 {
